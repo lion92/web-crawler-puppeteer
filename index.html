@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Recherche Carte</title>
+
+    <link rel="stylesheet" href="style.css">
+    <!--[if lt IE 9]>
+
+    <![endif]-->
+</head>
+
+<body>
+<h1>Recherche Deck</h1>
+<input type="text" id="card"/>
+<button onclick="fet()">lancer recherche</button>
+<ul>
+</ul>
+<style>h1{
+    color: indianred;
+}</style>
+</body>
+
+
+<script>
+    var myList = document.querySelector('ul');
+function fet(){
+    document.getElementById("card").value.split("*").forEach(cradencour=> {
+        fetch('http://localhost:3000/crawl', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({card: "" + cradencour, b: 'kuribo'})
+        }).then(function (response) {
+            if (!response.ok) {
+                throw new Error("HTTP error, status = " + response.status);
+            }
+            return response.json();
+        })
+            .then(function (json) {
+                for (var i = 0; i < json.length; i++) {
+                    var listItem = document.createElement('li');
+                    listItem.innerHTML += ' trouvé ' + json[i].nom + '.';
+                    listItem.innerHTML += ' Cost: <strong>' + json[i].price + 'euro</strong>';
+                    myList.appendChild(listItem);
+                }
+            })
+            .catch(function (error) {
+                var p = document.createElement('p');
+                p.appendChild(
+                    document.createTextNode('Error: ' + error.message)
+                );
+                document.body.insertBefore(p, myList);
+            });
+    })
+    }
+
+
+</script>
+</html>
