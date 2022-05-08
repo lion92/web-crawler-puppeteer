@@ -11,20 +11,84 @@
     <!--[if lt IE 9]>
 
     <![endif]-->
+
 </head>
 
 <body>
 <h1>Recherche Deck</h1>
+
 <input type="text" id="card"/>
+
 <button onclick="fet()">lancer recherche</button>
 <ul>
 </ul>
-<style>h1{
-    color: indianred;
-}</style>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: #3e3e3e;
+        color: #ffffff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .upload-container {
+        background: #191919;
+        padding: 1rem;
+        width: 50%;
+        text-align: center;
+    }
+
+    .upload-container form {
+        margin: 0 auto;
+        width: 50%;
+    }
+
+    .upload-container form label {
+        font-size: 2.5rem;
+        cursor: pointer;
+    }
+
+    .upload-container form input {
+        display: none;
+    }
+</style>
 </body>
+<body>
+<div class="upload-container">
+    <form>
+        <label for="file">Upload File</label>
+        <input type="file" id="file" accept="image/*" />
+    </form>
+</div>
+</body>
+<script>
+    document
+        .getElementById('file')
+        .addEventListener('change', event => {
+            const files = event.target.files;
+            const formData = new FormData();
+            formData.append('image', files[0]);
 
+            fetch('http://localhost:3000/image', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.body.style.background =
+                        "url('" + data.image + "')";
+                    document.body.style.backgroundSize = 'cover';
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        });
 
+</script>
 <script>
     var myList = document.querySelector('ul');
 function fet(){
@@ -62,4 +126,4 @@ function fet(){
 
 
 </script>
-</html>
+
